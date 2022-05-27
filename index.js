@@ -17,6 +17,7 @@ async function run() {
         await client.connect();
         const productCollection = client.db('manufacturerProducts').collection('products');
         const orderCollection = client.db('manufacturerProducts').collection('orders');
+        const userCollection = client.db('manufacturerProducts').collection('users');
 
         app.get('/product', async (req, res) => {
             const query = {};
@@ -30,6 +31,18 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const product = await productCollection.findOne(query)
             res.send(product)
+        })
+
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
         })
 
 
