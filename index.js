@@ -37,6 +37,7 @@ async function run() {
         const productCollection = client.db('manufacturerProducts').collection('products');
         const orderCollection = client.db('manufacturerProducts').collection('orders');
         const userCollection = client.db('manufacturerProducts').collection('users');
+        const reviewCollection = client.db('manufacturerProducts').collection('reviews');
 
         const verifyAdmin = async (req, res, next) => {
             const requester = req.decoded.email;
@@ -56,6 +57,7 @@ async function run() {
             const products = await cursor.toArray()
             res.send(products)
         })
+
 
         app.get('/product/:id', async (req, res) => {
             const id = req.params.id
@@ -139,6 +141,13 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await productCollection.deleteOne(query)
             res.send(result)
+        })
+
+        app.get('/review', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query)
+            const reviews = await cursor.toArray()
+            res.send(reviews)
         })
 
 
