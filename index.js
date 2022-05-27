@@ -31,33 +31,28 @@ async function run() {
             const product = await productCollection.findOne(query)
             res.send(product)
         })
+
+
+        app.get('/order', async (req, res) => {
+            const client = req.query.client;
+            const query = { client: client };
+            const orders = await orderCollection.find(query).toArray();
+            res.send(orders);
+        })
+
         app.post('/order', async (req, res) => {
             const newOrder = req.body;
             const result = await orderCollection.insertOne(newOrder);
             res.send(result)
         })
 
-        // app.put('/product/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const updateQuantity = parseInt(req.body);
-        //     const filter = { _id: ObjectId(id) };
-        //     const options = { upsert: true }
-        //     const updatedDoc = {
-        //         $set: {
-        //             quantity: updateQuantity.quantity,
 
-        //         }
-        //     }
-        //     const result = await productCollection.updateOne(filter, updatedDoc, options)
-        //     res.send(result)
+        // app.get('/order', async (req, res) => {
+        //     const query = {};
+        //     const cursor = orderCollection.find(query)
+        //     const orders = await cursor.toArray()
+        //     res.send(orders)
         // })
-
-        app.get('/order', async (req, res) => {
-            const query = {};
-            const cursor = orderCollection.find(query)
-            const orders = await cursor.toArray()
-            res.send(orders)
-        })
 
     }
 
