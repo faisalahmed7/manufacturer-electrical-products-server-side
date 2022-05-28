@@ -8,18 +8,7 @@ require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
-const corsConfig = {
-    origin: '*',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-app.use(cors(corsConfig))
-app.options("*", cors(corsConfig))
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,authorization")
-    next()
-})
+app.use(cors());
 
 app.use(express.json())
 
@@ -65,6 +54,7 @@ async function run() {
             }
         }
 
+
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const product = req.body;
             const price = product.price;
@@ -76,6 +66,18 @@ async function run() {
             });
             res.send({ clientSecret: paymentIntent.client_secret })
         });
+
+        // app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+        //     const product = req.body;
+        //     const price = product.price;
+        //     const amount = price * 100;
+        //     const paymentIntent = await stripe.paymentIntents.create({
+        //         amount: amount,
+        //         currency: 'usd',
+        //         payment_method_types: ['card']
+        //     });
+        //     res.send({ clientSecret: paymentIntent.client_secret })
+        // });
 
         app.get('/product', async (req, res) => {
             const query = {};
@@ -162,7 +164,6 @@ async function run() {
             const result = await orderCollection.insertOne(newOrder);
             res.send(result)
         })
-
         app.patch('/order/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const payment = req.body;
@@ -173,12 +174,27 @@ async function run() {
                     transactionId: payment.transactionId
                 }
             }
-
             const result = await paymentCollection.insertOne(payment);
-            const updateOrder = await orderCollection.updateOne(filter, updatedDoc);
-            res.send(updatedDoc)
-
+            const updatedOrder = await orderCollection.updateOne(filter, updatedDoc);
+            res.send(updatedDoc);
         })
+
+        // app.patch('/order/:id', verifyJWT, async (req, res) => {
+        //     const id = req.params.id;
+        //     const payment = req.body;
+        //     const filter = { _id: ObjectId(id) };
+        //     const updatedDoc = {
+        //         $set: {
+        //             paid: true,
+        //             transactionId: payment.transactionId
+        //         }
+        //     }
+
+        //     const result = await paymentCollection.insertOne(payment);
+        //     const updateOrder = await orderCollection.updateOne(filter, updatedDoc);
+        //     res.send(updatedDoc)
+
+        // })
 
         app.get('/order/:id', verifyJWT, async (req, res) => {
 
