@@ -59,7 +59,7 @@ async function run() {
             }
         }
 
-        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+        app.post('/create-payment-intent', async (req, res) => {
             const product = req.body;
             const price = product.price;
             const amount = price * 100;
@@ -157,7 +157,7 @@ async function run() {
             res.send(result)
         })
 
-        app.patch('/order/:id', verifyJWT, async (req, res) => {
+        app.patch('/order/:id', async (req, res) => {
             const id = req.params.id;
             const payment = req.body;
             const filter = { _id: ObjectId(id) };
@@ -170,11 +170,11 @@ async function run() {
 
             const result = await paymentCollection.insertOne(payment);
             const updateOrder = await orderCollection.updateOne(filter, updatedDoc);
-            res.send(updatedDoc)
+            res.send(updateOrder)
 
         })
 
-        app.get('/order/:id', verifyJWT, async (req, res) => {
+        app.get('/order/:id', async (req, res) => {
 
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
