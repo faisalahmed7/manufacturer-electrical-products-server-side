@@ -141,7 +141,7 @@ async function run() {
         //user profile
 
 
-        app.get('/order', verifyJWT, async (req, res) => {
+        app.get('/order', async (req, res) => {
             const client = req.query.client;
             const decodeEmail = req.decoded.email;
             if (client === decodeEmail) {
