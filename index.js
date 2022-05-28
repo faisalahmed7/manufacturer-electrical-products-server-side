@@ -59,7 +59,7 @@ async function run() {
             }
         }
 
-        app.post('/create-payment-intent', async (req, res) => {
+        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const product = req.body;
             const price = product.price;
             const amount = price * 100;
@@ -76,6 +76,12 @@ async function run() {
             const cursor = productCollection.find(query)
             const products = await cursor.toArray()
             res.send(products)
+        })
+        app.get('/order', verifyJWT, verifyAdmin, async (req, res) => {
+            const query = {};
+            const cursor = orderCollection.find(query)
+            const orders = await cursor.toArray()
+            res.send(orders)
         })
 
 
@@ -190,6 +196,12 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await productCollection.deleteOne(query)
+            res.send(result)
+        })
+        app.delete('/order/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query)
             res.send(result)
         })
 
