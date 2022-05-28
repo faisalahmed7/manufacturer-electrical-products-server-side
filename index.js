@@ -65,7 +65,7 @@ async function run() {
             }
         }
 
-        app.post('/create-payment-intent', async (req, res) => {
+        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const product = req.body;
             const price = product.price;
             const amount = price * 100;
@@ -141,7 +141,7 @@ async function run() {
         //user profile
 
 
-        app.get('/order', async (req, res) => {
+        app.get('/order', verifyJWT, async (req, res) => {
             const client = req.query.client;
             const decodeEmail = req.decoded.email;
             if (client === decodeEmail) {
@@ -163,7 +163,7 @@ async function run() {
             res.send(result)
         })
 
-        app.patch('/order/:id', async (req, res) => {
+        app.patch('/order/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const payment = req.body;
             const filter = { _id: ObjectId(id) };
@@ -180,7 +180,7 @@ async function run() {
 
         })
 
-        app.get('/order/:id', async (req, res) => {
+        app.get('/order/:id', verifyJWT, async (req, res) => {
 
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
