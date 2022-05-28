@@ -106,6 +106,9 @@ async function run() {
         })
 
 
+        //user profile
+
+
         app.get('/order', verifyJWT, async (req, res) => {
             const client = req.query.client;
             const decodeEmail = req.decoded.email;
@@ -148,6 +151,11 @@ async function run() {
             const cursor = reviewCollection.find(query)
             const reviews = await cursor.toArray()
             res.send(reviews)
+        })
+        app.post('/review', verifyJWT, async (req, res) => {
+            const newReview = req.body;
+            const result = await reviewCollection.insertOne(newReview);
+            res.send(result);
         })
 
 
