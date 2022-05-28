@@ -176,7 +176,7 @@ async function run() {
 
             const result = await paymentCollection.insertOne(payment);
             const updateOrder = await orderCollection.updateOne(filter, updatedDoc);
-            res.send(updateOrder)
+            res.send(updatedDoc)
 
         })
 
