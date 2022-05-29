@@ -143,7 +143,7 @@ async function run() {
         //user profile
 
 
-        app.get('/order', verifyJWT, async (req, res) => {
+        app.get('/person', verifyJWT, async (req, res) => {
             const client = req.query.client;
             const decodeEmail = req.decoded.email;
             if (client === decodeEmail) {
@@ -195,6 +195,12 @@ async function run() {
         //     res.send(updatedDoc)
 
         // })
+        app.delete("/order/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(filter);
+            res.send(result);
+        });
 
         app.get('/order/:id', verifyJWT, async (req, res) => {
 
